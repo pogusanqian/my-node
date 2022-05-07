@@ -19,6 +19,7 @@ function* gen() {
 function run(g) {
   // 定义thunk函数的回调方法
   function callback(err, data) {
+    console.log('------', String(data));
     if (err) return;
     var result = g.next(data);
     if (result.done) return;
@@ -28,5 +29,4 @@ function run(g) {
 }
 
 run(gen());
-run(gen());
-console.log('==============')
+console.log('==============');

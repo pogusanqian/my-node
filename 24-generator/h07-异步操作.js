@@ -17,13 +17,15 @@ function* gen() {
   return axios('http://www.qq.com');
 }
 
-const g1 = gen();
-const pro1 = g1.next().value;
-console.log('=============');
-const pro2 = g1.next(pro1).value;
-console.log('==============');
-const pro3 = g1.next(pro2).value;
+// const g1 = gen();
+// const pro1 = g1.next().value;
+// console.log('=============');
+// const pro2 = g1.next(pro1).value;
+// console.log('==============');
+// const pro3 = g1.next(pro2).value;
 
 // 通过then传递具体的响应值
 const g2 = gen();
-g2.next().value.then(data => g2.next(data).value).then(data => g2.next(data))
+g2.next().value
+.then(data => g2.next(data).value)
+.then(data => g2.next(data))

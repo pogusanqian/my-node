@@ -12,5 +12,8 @@ function ThunkFactory(fn) {
 
 // 生成readFile的Thunk工厂
 const readFileThunkFactory = ThunkFactory(fs.readFile);
+
+
 const readFileThunk = readFileThunkFactory('./hello.txt');
+
 readFileThunk((err, buf) => console.log(buf.toString()));
