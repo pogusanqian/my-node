@@ -1,5 +1,7 @@
 const { Sequelize } = require('sequelize');
+const cls = require('cls-hooked');
 
+Sequelize.useCLS(cls.createNamespace('my-namespace'));
 const sequelize = new Sequelize('db_school', 'root', '123123', {
     host: '127.0.0.1',
     port: '3306',
@@ -7,7 +9,7 @@ const sequelize = new Sequelize('db_school', 'root', '123123', {
     timezone: '+08:00',
     logging: false,
     pool: {
-        max: 10,
+        max: 30,
     },
     define: {
         timestamps: false,
