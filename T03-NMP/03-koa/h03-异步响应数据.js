@@ -1,6 +1,6 @@
 const Koa = require('koa');
 const KoaRouter = require('koa-router');
-const DataHubDao = require('../22-sequelize/dao/DataHubDao');
+const DataHubDao = require('../../22-sequelize/dao/DataHubDao');
 
 const app = new Koa();
 const router = new KoaRouter();
