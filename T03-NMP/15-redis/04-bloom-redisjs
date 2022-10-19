@@ -1,0 +1,19 @@
+const redis = require('redis');
+const bloom = require('bloom-redis');
+
+
+const client = redis.createClient({
+  url: 'redis://192.168.124.10:6379',
+  password: '123123',
+});
+bloom.connect(client);
+
+const filter = new bloom.BloomFilter({
+  client: client,
+  key: 'haha'
+});
+const data = filter.contains('name', (err, data) => {
+  console.log(err, data);
+});
+
+console.log(data);

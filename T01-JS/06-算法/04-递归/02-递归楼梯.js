@@ -18,4 +18,4 @@ function getAnswers(num) {
   return answers;
 }
 
-console.log(getAnswers(3));
+console.log(getAnswers(40));
