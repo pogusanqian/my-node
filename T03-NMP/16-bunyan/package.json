@@ -1,0 +1,16 @@
+{
+  "name": "bunyan",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "  node app.js | bunyan",
+    "inquirer": " echo wangwu | node inquirer.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bunyan": "^1.8.15",
+    "inquirer": "^8.0.0"
+  }
+}
