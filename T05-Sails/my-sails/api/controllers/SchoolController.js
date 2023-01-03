@@ -7,6 +7,7 @@
 
 module.exports = {
   async addSchool(req, res) {
+    // 这里的School对象没有引入, 而是直接使用
     res.send(await School.create(req.body).fetch());
   },
 

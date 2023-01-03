@@ -20,6 +20,14 @@ module.exports = {
 
     // 简写方式
     res.json(stu);
+  },
+
+  getPort: function (req, res) {
+    res.json({
+      prot: sails.config.port,
+      sailsEnv: sails.config.environment,
+      nodeEnv: process.env.NODE_ENV || '',
+    });
   }
 };
 

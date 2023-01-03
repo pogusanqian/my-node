@@ -6,18 +6,10 @@
  */
 
 module.exports = {
-
   attributes: {
-    name: {
-      type: 'string'
-    },
-    age: {
-      type: 'number'
-    },
-    sex: {
-      type: 'number',
-    }
+    name: { type: 'string', required: true, unique: true },
+    age: { type: 'number', defaultsTo: 0 },
+    sex: { type: 'number', defaultsTo: 1 },
   },
-
 };
 

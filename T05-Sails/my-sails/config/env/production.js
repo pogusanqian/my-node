@@ -1,4 +1,3 @@
-
 module.exports = {
   //http://sailsjs.org/#!/documentation/reference/blueprint-api
   //http://sailsjs.org/#!/documentation/reference/sails.config/sails.config.blueprints.html
