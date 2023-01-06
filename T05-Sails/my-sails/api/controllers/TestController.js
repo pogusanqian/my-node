@@ -4,7 +4,6 @@
  * @description :: Server-side actions for handling incoming requests.
  * @help        :: See https://sailsjs.com/docs/concepts/actions
  */
-
 module.exports = {
 
   getTxt: function (req, res) {
@@ -23,11 +22,16 @@ module.exports = {
   },
 
   getPort: function (req, res) {
-    res.json({
+    res.ok({
       prot: sails.config.port,
       sailsEnv: sails.config.environment,
       nodeEnv: process.env.NODE_ENV || '',
     });
+  },
+
+  test: function (req, res) {
+    const actions = sails.getActions();
+    res.ok('Hello World');
   }
 };
 
