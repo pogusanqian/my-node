@@ -1,6 +1,7 @@
+sources/nocommit
 /**/.idea/
 /**/.vscode/
-sources/nocommit
+/**/logs
 /**/node_modules
 /**/*.tgz
 /**/*.env

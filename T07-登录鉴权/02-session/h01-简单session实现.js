@@ -1,7 +1,6 @@
 const Koa = require('koa');
 const Router = require('koa-router');
 const { koaBody } = require('koa-body');
-const session = require('koa-session');
 const crypto = require('crypto');
 const uuid = require('uuid');
 
@@ -9,16 +8,7 @@ const uuid = require('uuid');
 const app = new Koa();
 const router = new Router();
 app.keys = ['myCookieKey'];
-const CONFIG = {
-  key: 'sessionId',           // sessionId的默认key
-  maxAge: 1000 * 60 * 30,     // sessionId有效时间
-  overwrite: true,            // seessionId是否可覆盖
-  httpOnly: true,             // true表示只有服务器端可以获取cookie
-  signed: true,               // 开启签名
-  rolling: false,             // 在每次请求时强行设置cookie, 这将重置cookie过期时间(默认：false)
-  renew: true,                // 会话即将过期时, 重新设置会话
-};
-app.use(session(CONFIG, app));
+const sessionMap = new Map();
 
 const key = '123456789abcdefg';
 const iv = 'abcdefg123456789';
@@ -43,25 +33,19 @@ function decipher(text) {
   return decipherText + decipher.final('utf8');
 }
 
-// 鉴权拦截器(校验cookie中的用户名和密码是否一致)
+// 鉴权拦截器
 async function authHandler(ctx, next) {
   const witeList = ['/login', '/getpublickey'];
-  if (witeList.includes(ctx.path)) {
+  if (witeList.includes(ctx.path)) { // 白名单放行
     await next();
-  } else {
-    // 获取sessionId
-    console.log('============', ctx.session);
-    await next();
-
-    // 进行相关判断
-    // if (users.find(item => item.name === name && item.password === password)) {
-    //   await next();
-    // } else {
-    //   ctx.body = {
-    //     code: -1001,
-    //     mes: '鉴权失败, 跳转到登录页面'
-    //   };
-    // }
+  } else { // 校验session
+    const userInfo = sessionMap.get(ctx.cookies.get('sessionId', { signed: true }));
+    if (userInfo) {
+      ctx.request.context = { userInfo };
+      await next();
+    } else {
+      ctx.body = { code: -1001, mes: '鉴权失败, 跳转到登录页面' };
+    }
   }
 }
 
@@ -71,10 +55,7 @@ async function errorHandler(ctx, next) {
     await next();
   } catch (err) {
     console.error(err);
-    ctx.body = {
-      code: -1,
-      msg: '请求失败'
-    };
+    ctx.body = { code: -1, msg: '请求失败' };
   }
 }
 
@@ -82,11 +63,7 @@ async function errorHandler(ctx, next) {
 async function successResponseHandle(ctx, next) {
   await next();
   if (ctx.body && !Object.hasOwn(ctx.body, 'code')) {
-    ctx.body = {
-      code: 0,
-      msg: '请求成功',
-      data: ctx.body,
-    };
+    ctx.body = { code: 0, msg: '请求成功', data: ctx.body };
   }
 }
 
@@ -94,18 +71,15 @@ async function successResponseHandle(ctx, next) {
 router.post('/login', (ctx, next) => {
   // 获取请求参数, 需要使用私钥解密数据
   let { name, password } = ctx.request.body;
-  const privateKey = {
-    key: randomKeys[ctx.query.keyUUID],
-    padding: crypto.constants.RSA_PKCS1_PADDING
-  };
+  const privateKey = { key: randomKeys[ctx.query.keyUUID], padding: crypto.constants.RSA_PKCS1_PADDING };
   password = crypto.privateDecrypt(privateKey, Buffer.from(password, 'base64')).toString();
   // 登录成功便跳转首页并设置session
   const user = users.find(item => item.name === name && decipher(item.password) === password);
   if (user) {
-    // 设置session, 这些用户信息会被转码后存储在客户端(默认方案)的一个cookie中
-    // 可以采用外部方案进行存储, 此时只会将一个sessionId存储在客户端
-    ctx.session.userinfo = user;
-    ctx.session.userinfo2 = user;
+    const sessionId = uuid.v4();
+    sessionMap.set(sessionId, user);
+    ctx.cookies.set('sessionId', sessionId, { signed: true });
+    setTimeout(() => sessionMap.delete(sessionId), 1000 * 60 * 30);
     ctx.body = '登录成功, 跳转到首页';
   } else {
     ctx.body = { code: -1, msg: '账户密码不对, 请重新登录' };

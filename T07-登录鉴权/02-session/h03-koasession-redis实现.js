@@ -13,7 +13,7 @@ const CONFIG = {
   key: 'sessionId',           // sessionId的默认key
   maxAge: 1000 * 60 * 30,     // sessionId有效时间
   overwrite: true,            // seessionId是否可覆盖
-  httpOnly: true,             // true表示只有服务器端可以获取cookie
+  httpOnly: true,             // true表示只有在发送http请求时, 再能获取cookie, js脚本获取不到cookie
   signed: true,               // 开启签名
   rolling: false,             // 在每次请求时强行设置cookie, 这将重置cookie过期时间(默认：false)
   renew: true,                // 会话即将过期时, 重新设置会话
@@ -43,25 +43,18 @@ function decipher(text) {
   return decipherText + decipher.final('utf8');
 }
 
-// 鉴权拦截器(校验cookie中的用户名和密码是否一致)
+// 鉴权拦截器
 async function authHandler(ctx, next) {
   const witeList = ['/login', '/getpublickey'];
   if (witeList.includes(ctx.path)) {
     await next();
   } else {
-    // 获取sessionId
-    console.log('============', ctx.session);
-    await next();
-
-    // 进行相关判断
-    // if (users.find(item => item.name === name && item.password === password)) {
-    //   await next();
-    // } else {
-    //   ctx.body = {
-    //     code: -1001,
-    //     mes: '鉴权失败, 跳转到登录页面'
-    //   };
-    // }
+    console.log(ctx.session);
+    if (Object.hasOwn(ctx.session, 'userId')) {
+      await next();
+    } else {
+      ctx.body = { code: -1001, mes: '鉴权失败, 跳转到登录页面' };
+    }
   }
 }
 
@@ -104,8 +97,7 @@ router.post('/login', (ctx, next) => {
   if (user) {
     // 设置session, 这些用户信息会被转码后存储在客户端(默认方案)的一个cookie中
     // 可以采用外部方案进行存储, 此时只会将一个sessionId存储在客户端
-    ctx.session.userinfo = user;
-    ctx.session.userinfo2 = user;
+    ctx.session.userId = user.id;
     ctx.body = '登录成功, 跳转到首页';
   } else {
     ctx.body = { code: -1, msg: '账户密码不对, 请重新登录' };

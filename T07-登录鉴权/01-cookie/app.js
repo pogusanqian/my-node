@@ -44,10 +44,7 @@ async function authHandler(ctx, next) {
     if (users.find(item => item.name === name && item.password === password)) {
       await next();
     } else {
-      ctx.body = {
-        code: -1001,
-        mes: '鉴权失败, 跳转到登录页面'
-      };
+      ctx.body = { code: -1001, mes: '鉴权失败, 跳转到登录页面' };
     }
   }
 }

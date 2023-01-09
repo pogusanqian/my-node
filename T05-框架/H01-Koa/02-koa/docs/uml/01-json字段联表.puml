@@ -1,0 +1,20 @@
+@startuml
+:json字段的链表;
+note: 此时json数据是另一张表的子表,\n需要同步父表数据
+switch ()
+case (父表添加数据)
+:对JSON子表没有影响;
+case (父表删除数据)
+:根据父表的主键, 进行查找json子表;
+switch (查询JSON子表的数量)
+case (0条数据)
+:不做任何操作;
+case (1或多条数据)
+:将对应的json字段反序列化成数组;
+:删除json数组中对应的父表数据,\n如果json数组中只有一条数据, 便返回一个空数组;
+:进行批量更新;
+endswitch
+case (父表修改数据数据)
+:等同与父表删除数据;
+endswitch
+@enduml
