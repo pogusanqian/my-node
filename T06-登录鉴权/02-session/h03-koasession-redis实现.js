@@ -49,7 +49,6 @@ async function authHandler(ctx, next) {
   if (witeList.includes(ctx.path)) {
     await next();
   } else {
-    console.log(ctx.session);
     if (Object.hasOwn(ctx.session, 'userId')) {
       await next();
     } else {
@@ -64,10 +63,7 @@ async function errorHandler(ctx, next) {
     await next();
   } catch (err) {
     console.error(err);
-    ctx.body = {
-      code: -1,
-      msg: '请求失败'
-    };
+    ctx.body = { code: -1, msg: '请求失败' };
   }
 }
 

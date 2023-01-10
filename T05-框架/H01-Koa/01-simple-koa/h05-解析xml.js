@@ -1,6 +1,5 @@
 const koa = require('koa');
 const xmlParser = require('koa-xml-body');
-// const bodyParser = require('koa-bodyparser');
 const { koaBody: bodyParser } = require('koa-body');
 
 const app = new koa();

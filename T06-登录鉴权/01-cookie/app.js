@@ -94,7 +94,7 @@ router.post('/login', (ctx, next) => {
   next();
 });
 
-// 提供给前端随机公钥, 用来加密登录密码等敏感信息, 
+// 提供给前端随机公钥, 用来加密登录密码等敏感信息
 router.get('/getpublickey', (ctx, next) => {
   // 生成公私钥
   const { publicKey, privateKey } = crypto.generateKeyPairSync('rsa', {
