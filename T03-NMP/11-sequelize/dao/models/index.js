@@ -2,7 +2,8 @@ const { Sequelize } = require('sequelize');
 const cls = require('cls-hooked');
 
 Sequelize.useCLS(cls.createNamespace('my-namespace'));
-const sequelize = new Sequelize('db_school', 'root', '123123', {
+
+const options = {
     host: '127.0.0.1',
     port: '3306',
     dialect: 'mysql',
@@ -19,5 +20,11 @@ const sequelize = new Sequelize('db_school', 'root', '123123', {
         dateStrings: true,
         typeCast: true
     },
-});
-module.exports = sequelize;
+};
+const localSequelize = new Sequelize('db_school', 'root', '123123', options);
+const netSequelize = new Sequelize('school', 'root', '123123', options);
+
+module.exports = {
+    localSequelize,
+    netSequelize,
+};
