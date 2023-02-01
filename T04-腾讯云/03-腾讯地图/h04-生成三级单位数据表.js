@@ -1,12 +1,12 @@
 const { Sequelize } = require('sequelize');
 const dotenv = require('dotenv');
-const urlencode = require('urlencode');
 const axios = require('axios');
 const md5 = require('md5');
+const { pinyin } = require('pinyin-pro');
 
 // 配置数据库连接
-dotenv.config({ path: '26-腾讯地图/.env' });
-const sequelize = new Sequelize('db_school', 'root', '123123', {
+dotenv.config();
+const sequelize = new Sequelize('db_school', 'root', 'root', {
   host: '127.0.0.1',
   port: '3306',
   dialect: 'mysql',
@@ -51,11 +51,12 @@ function getInsertSqlFileNames(data) {
 
 async function insertData(tableName, data) {
   try {
+    await sequelize.query(`truncate ${tableName}`);
     data = data.map(item => ({
-      f_name: item.name || '', // 区域名称没有这个字段
+      f_name: item.name || item.fullname, // 区域名称没有这个字段
       f_full_name: item.fullname,
       f_code: item.id,
-      f_pin_yin: item.pinyin?.join('') || '' // 区域名称没有这个字段
+      f_pin_yin: (item.pinyin || pinyin(item.fullname, { toneType: 'none', type: 'array' })).join(' ') // 区域名称没有这个字段
     }));
     const sql = `insert into ${tableName} ${getInsertSqlFileNames(data)} values ${getInsertSqlValues(data)}`;
     return await sequelize.query(sql);
@@ -69,7 +70,7 @@ async function getData() {
   const originUrl = 'https://apis.map.qq.com';
   const pathname = '/ws/district/v1/list';
   const key = 'QEIBZ-SMDKK-Q6KJT-AU6LO-JEE4K-WVFJD';
-  const sig = md5(`${pathname}?key=${key}${process.env.sk}`);
+  const sig = md5(`${pathname}?key=${process.env.key}${process.env.sk}`);
 
   return (await axios.get(`${originUrl}${pathname}?key=${key}&sig=${sig}`)).data.result;
 }
