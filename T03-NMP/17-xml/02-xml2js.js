@@ -7,19 +7,17 @@ const xml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
   <schools>河南理工</schools>
   <schools>北京理工</schools>
   <schools>清华大学</schools>
-  <friends>
-    <name>李四</name>
-    <age>24</age>
-  </friends>
-  <friends>
-    <name>王五</name>
-    <age>25</age>
-  </friends>
-  <address>
-    <contry>中国</contry>
-    <city>濮阳</city>
-  </address>
-  <booleand>true</booleand>
+  <frendList>
+    <friendItem>
+      <name>李四</name>
+      <age>24</age>
+    </friendItem>
+    <friendItem>
+      <name>王五</name>
+      <age>25</age>
+    </friendItem>
+  </frendList>
+  <haha><ss>哈哈</ss></haha>
 </root>`;
 
 const stu = {
@@ -56,7 +54,7 @@ const stu = {
     valueProcessors: [xml2js.processors.parseNumbers, xml2js.processors.parseBooleans]
   });
   const res = await parser.parseStringPromise(xml);
-  // console.log(res);
+  console.log(res);
 
   // js转换成xml
   const builder = new xml2js.Builder({ rootName: 'root' });

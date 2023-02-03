@@ -32,5 +32,5 @@ const stu = {
 };
 const res2 = convert.js2xml(stu, { compact: true, spaces: 4 });
 
-console.log(JSON.stringify(res1));
+console.log(res1);
 console.log(res2);
