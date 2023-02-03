@@ -7,6 +7,7 @@ const xml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
   <schools>河南理工</schools>
   <schools>北京理工</schools>
   <schools>清华大学</schools>
+  <Address><![CDATA[濮阳市]]></Address>
   <frendList>
     <friendItem>
       <name>李四</name>
@@ -17,7 +18,7 @@ const xml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
       <age>25</age>
     </friendItem>
   </frendList>
-  <haha><ss>哈哈</ss></haha>
+  <haha disable="1" show="1"><ss>哈哈</ss></haha>
 </root>`;
 
 const stu = {
@@ -44,7 +45,7 @@ const stu = {
     // 忽略根目录
     explicitRoot: false,
     // 忽略所有XML属性, 仅创建文本节点
-    ignoreAttrs: true,
+    // ignoreAttrs: true,
     // 忽略空格
     trim: true,
     // 开启严格模式
