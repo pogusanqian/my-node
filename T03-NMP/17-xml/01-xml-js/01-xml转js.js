@@ -28,11 +28,11 @@ const unNormalJson = convert.xml2js(xml, {
   // 忽略注释
   ignoreComment: true,
   // 忽略分析声明
-  // ignoreDeclaration: true,
+  ignoreDeclaration: true,
   // 忽略元素的解析文档类型
-  // ignoreDoctype: true,
+  ignoreDoctype: true,
   // element名称转换
   elementNameFn: (val) => val.charAt(0).toLowerCase() + val.slice(1)
 });
 
-console.log(unNormalJson);
+console.log(unNormalJson.root.name);
