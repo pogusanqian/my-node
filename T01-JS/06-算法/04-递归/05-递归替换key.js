@@ -1,37 +1,28 @@
-/**
- * 实现key值替换
- * @param {*} obj 
- * @param {*} params  设置替换的key值, {'schoolList::ip': 'IP'}表示将schoolList属性下的ip地址替换成IP, ::表示分隔符
- * @param {*} prexKey 
- * @returns 
- */
-function replaceKeyByObj(obj, params, prexKey = '') {
-  const res = {};
-  Object.keys(obj).forEach(key => {
-    const value = obj[key];
-    if (Array.isArray(value)) {
-      res[key] = value.map(item => replaceKeyByObj(item, params, `${prexKey}${key}::`));
-    } else if (typeof value === 'object') {
-      res[key] = replaceKeyByObj(value, params, `${prexKey}${key}::`);
-    } else {
-      if (Object.keys(params).includes(prexKey + key)) { // 替换Key
-        res[params[prexKey + key]] = value;
+function replaceKey(obj, params) {
+  const res = JSON.parse(JSON.stringify(obj));
+  const pathList = Object.keys(params);
+  pathList.forEach(item => {
+    const finalKey = params[item];
+    const keyList = item.split('::');
+    let temp = res;
+    for (let index = 0; index < keyList.length; index++) {
+      const key = keyList[index];
+      const value = temp[key];
+      if (index === keyList.length - 1) {
+        temp[finalKey] = value;
+        delete temp[key];
       } else {
-        res[key] = value;
+        if (Array.isArray(value)) {
+          temp[key]  = value.map(item2 => replaceKey(item2, {[keyList.slice(index + 1).join('::')]: finalKey}));
+          break;
+        } else {
+          temp = temp[key];
+        }
       }
     }
   });
   return res;
 };
-
-function replaceKey(data, params) {
-  data = data || {};
-  if (Array.isArray(data)) {
-    return data.map(item => replaceKeyByObj(item, params));
-  } else {
-    return replaceKeyByObj(data, params);
-  }
-}
 
 const stu = {
   name: '张三',
@@ -48,15 +39,18 @@ const stu = {
     name: '万里红科技公司',
     haha: {
       ip: 'aaa'
-    }
+    },
+    list: [
+      {name: 'aaa'}
+    ]
   }
 };
 
 const res = replaceKey(stu, {
   'pc': 'PC',
-  'schoolList::ip': 'IP',
+  'schoolList': 'mySchool',
   'company::haha::ip': 'IP',
-  'company::ip': 'IP',
+  'company::list::name': 'myname',
 });
 
 console.log(res);

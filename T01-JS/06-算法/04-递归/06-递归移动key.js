@@ -35,11 +35,8 @@ function moveKey(data, params) {
       }, res);
     }
   });
-
-
   return res;
 }
-
 
 const stu = {
   name: '张三',
@@ -71,13 +68,11 @@ const stu = {
 };
 
 const res = moveKey(stu, {
-  '@schoolList::schoolInfo': { // 移动数组对象中元素, 数组的填写需要放在最前面
+  '@schoolList::schoolInfo': { // 移动数组对象中元素, 数组的填写需要放在最前面, 并且需要以@开头
     'processList::processInfo': 'processList'
   },
   // 移动对象上的属性
   'schoolList::schoolInfo': 'schoolList',
-  'AList::AInfo': 'AList',
-  'address::cityCode': 'hahaa',
   'USBList': 'USBList::processInfo',
 });
 
