@@ -6,16 +6,15 @@
  * @returns 
  */
 function replaceKeyByObj(obj, params, prexKey = '') {
-  const separator = '::';
   const res = {};
   Object.keys(obj).forEach(key => {
     const value = obj[key];
     if (Array.isArray(value)) {
-      res[key] = value.map(item => replaceKeyByObj(item, params, prexKey + key + separator));
+      res[key] = value.map(item => replaceKeyByObj(item, params, `${prexKey}${key}::`));
     } else if (typeof value === 'object') {
-      res[key] = replaceKeyByObj(value, params, prexKey + key + separator);
+      res[key] = replaceKeyByObj(value, params, `${prexKey}${key}::`);
     } else {
-      if (Object.keys(params).includes(prexKey + key)) {
+      if (Object.keys(params).includes(prexKey + key)) { // 替换Key
         res[params[prexKey + key]] = value;
       } else {
         res[key] = value;
@@ -53,7 +52,7 @@ const stu = {
   }
 };
 
-const res = replaceKey(null, {
+const res = replaceKey(stu, {
   'pc': 'PC',
   'schoolList::ip': 'IP',
   'company::haha::ip': 'IP',
