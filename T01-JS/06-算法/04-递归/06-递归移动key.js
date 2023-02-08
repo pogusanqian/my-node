@@ -9,27 +9,28 @@ function moveKey(data, params) {
         if (index === oldKeyList.length - 1) {
           prev[key] = prev[key].map(item => moveKey(item, paramValue));
         } else {
-          prev = prev[key];
-          return prev;
+          return prev[key];
         }
       }, res);
     } else {
       const newKeyList = paramValue.split('::');
       let newValue = null;
+      // 递归获取值
       oldKeyList.reduce((prev, key, index) => {
         if (index === oldKeyList.length - 1) { // 获取最后一层的值
           newValue = prev[key];
           delete prev[key];
-        } else { // 递归到最后一层
-          prev = prev[key];
-          return prev;
+        } else {
+          return prev[key];
         }
       }, res);
+      // 递归设置值
       newKeyList.reduce((prev, key, index) => {
-        if (index === newKeyList.length - 1) { // 获取最后一层的值
-          prev[key] = newValue ;
-        } else { // 递归到最后一层
-          prev[key] = {};
+        if (index === newKeyList.length - 1) {
+          prev[key] = newValue;
+        } else {
+          // 这里不能直接返回, 因为空对象需要挂在到prev中, 此时空对象就挂载到了prev对象上了
+          prev[key] = typeof prev[key] === 'object' ? prev[key] : {};
           return prev[key];
         }
       }, res);
@@ -38,42 +39,22 @@ function moveKey(data, params) {
   return res;
 }
 
-const stu = {
-  name: '张三',
-  schoolList: {
-    schoolInfo: [
-      {
-        name: '河南理工大学',
-        address: '焦作市',
-        processList: {
-          processInfo: [{
-            pid: 100
-          }]
-        }
-      }
-    ]
-  },
-  USBList: [
-    { pid: 1001 }
-  ],
-  AList: {
-    AInfo: {
-      pid: 1001
-    }
-  },
-  address: {
-    cityCode: '110000',
-    cityName: 'hahaha'
-  }
-};
 
-const res = moveKey(stu, {
-  '@schoolList::schoolInfo': { // 移动数组对象中元素, 数组的填写需要放在最前面, 并且需要以@开头
-    'processList::processInfo': 'processList'
-  },
-  // 移动对象上的属性
-  'schoolList::schoolInfo': 'schoolList',
-  'USBList': 'USBList::processInfo',
+const data = {
+  root: {
+    stu: {
+      name: '张三',
+      age: 23,
+      school:{
+        name: '河南理工大学',
+        address: '焦作市'
+      }
+    }
+  }
+}
+
+const res = moveKey(data, {
+  'root::stu::school::address': 'root::stu::schoolAddress'
 });
 
 console.log(res);
