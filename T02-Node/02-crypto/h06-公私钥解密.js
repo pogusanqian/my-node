@@ -26,7 +26,12 @@ function privateKeyDecrypt(encryptedData, privateKey) {
   return crypto.privateDecrypt(privateKey, Buffer.from(encryptedData, 'base64')).toString();
 }
 
-const text = 'HelloWorld你好世界';
+const text = 'admin';
 const { publicKey, privateKey } = genRSAKeyPaire();
-console.log('密文: ', publicKeyEncrypt(text, publicKey));
-console.log('明文: ', privateKeyDecrypt(publicKeyEncrypt(text, publicKey), privateKey));
+const encryText = publicKeyEncrypt(text, publicKey);
+const decryText = privateKeyDecrypt(encryText, privateKey);
+
+console.log(publicKey);
+console.log(privateKey);
+console.log('密文: ', encryText);
+console.log('明文: ', decryText);
