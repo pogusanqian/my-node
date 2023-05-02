@@ -11,6 +11,13 @@ const dayjs = require("dayjs");
 // console.log(dayjs(1678869215000).format("YYYY-MM-DD HH:mm:ss"));
 // console.log(dayjs(1678809600000).format("YYYY-MM-DD HH:mm:ss"));
 
-console.log(String(dayjs().unix()).length)
-console.log(String(Date.now()).length)
+// console.log(String(dayjs().unix()).length)
+// console.log(String(Date.now()).length)
+
+// 时间戳转换
+// console.log(dayjs().unix())
+console.log(dayjs(1682844688 * 1000).format("YYYY-MM-DD HH:mm:ss"));
+console.log(dayjs.unix(1682870400).format("YYYY-MM-DD HH:mm:ss"));
+
+
 
