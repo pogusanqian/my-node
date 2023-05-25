@@ -1,4 +1,4 @@
-// 这个包不能进行非对称加密
+// 这个包不能进行非对称加密, 非对称加密一般使用jsencrypt
 const CryptoJS = require('crypto-js');
 
 const text = 'admin';
