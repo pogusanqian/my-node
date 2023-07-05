@@ -1,6 +1,6 @@
 const Joi = require('joi');
 
-const schema = Joi.string().min(3).max(5);
-const res = schema.validate('ssssssssssssssssssssssss');
+const schema = Joi.array().items(Joi.number().positive());
 
+const res = schema.validate([0]);
 console.log(res);
