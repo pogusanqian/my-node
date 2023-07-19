@@ -1,0 +1,88 @@
+global.window = {};
+const JSEncrypt = require('jsencrypt');
+const crypto = require('crypto');
+
+const text = 'haha';
+const publicKey = `-----BEGIN RSA PUBLIC KEY-----
+MIICCgKCAgEAuFY7zluxKw/A01Av40nrgbUaYMmjH7gfbWKzVmp8QYGzNSUiS/4P
+E/J0oSfdxoFzGd2Z1Vb8X9jxI5+oav+Sh5mg8ODRArnunWqrQfZofOcb1lqBBUVQ
+Qn9NsxoYgOQXBeDLCTStF2CHr2SZ0CfdDKtdp6LCX3vxSzp3wytL9Yn9aOltOVA/
+fgoO7MaXUbWu1pS9cx3a++oULL4iArTq4Nf2jXGScfasgNH/m2qjJuql9LIQD0tN
+FLY6ifKdx95Wo9JXnqODHf1yDAqoZIn7fzrNhiOMQuFMy+6KGqnL5TQxhzdB2oUn
+0t7RFrqCHAeRLWW/bGscRhcSkWgmiOTfw2maRpamsjQUoKtKmYPvOaHkuQBuK/io
+3O0N1yimuGTlN6AHE/ZVygPUlt86jYPvmBkiOFPqqOKEdJjGhb/I+hRQmU33DydJ
+VoU+GTVhc4Q2HTj0w8w50SSyoWF4qsTDs1ESloswAgcpzxqV/uYvNAZuaoCLHXO5
+SRVKdNdc2iuIrPTM2h6dDe5Q42kJFE2IIUn5knQNlMxXZ16QIwke4fX4lIGRr8Kf
+AUX+4kJtlHg0mhPHeyHYcR/nOTMLqvbEhCuF03ZbHDshyUG52Ic7zoUOZ0KTdBQN
+h6CIZ5yMwnbKSyTops+qJTv5U/EAzp1pw+Ji+PZgpGi9tLvhtfz9WbcCAwEAAQ==
+-----END RSA PUBLIC KEY-----`;
+const privateKey = `-----BEGIN RSA PRIVATE KEY-----
+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
+-----END RSA PRIVATE KEY-----`;
+
+const encrypt = new JSEncrypt();
+encrypt.setPublicKey(publicKey);
+const encryptText = encrypt.encrypt(text);
+console.log(encryptText);
+console.log('==========');
+console.log(encodeURIComponent(encryptText));
+
+const decrypt = new JSEncrypt();
+decrypt.setPrivateKey(privateKey);
+const decryptText = decrypt.decrypt(encryptText);
+console.log(decryptText);
+
+const obj = {
+  key: privateKey,
+  padding: crypto.constants.RSA_PKCS1_PADDING,
+};
+const decryptText2 = crypto.privateDecrypt(obj, Buffer.from(encryptText, 'base64')).toString();
+console.log(decryptText2);
